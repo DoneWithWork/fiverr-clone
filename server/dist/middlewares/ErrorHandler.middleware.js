@@ -14,6 +14,7 @@ function ErrorHandlerMiddleware(err, req, res, next) {
         if (process.env.NODE_ENV === "development") {
             console.error(err);
         }
+        console.log("-----------Error Handler Middleware-----------");
         console.log("Error: ", err.message);
         res.status(500).send("Internal Server Error");
     });
