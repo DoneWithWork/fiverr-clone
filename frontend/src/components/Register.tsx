@@ -17,8 +17,11 @@ import { useState } from "react";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { useNavigate } from "react-router-dom";
-import FetchHelper from "@/lib/fetchHelper";
+
 import { ErrorToast, SuccessToast } from "./toasts";
+import { FetchHelper } from "@/lib/fetchHelper";
+import { Label } from "./ui/label";
+
 const registerSchema = z.object({
   username: z.string().min(2, {
     message: "Must be more than two characters",
@@ -112,8 +115,8 @@ export default function RegisterForm() {
     }
   };
   return (
-    <div className="container my-2">
-      <h1 className="text-2xl my-5">Register New Account</h1>
+    <div className="container py-2">
+      <h1 className="text-2xl py-5">Register New Account</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="gap-10 grid grid-cols-1 md:grid-cols-2 mx-auto">
@@ -174,15 +177,18 @@ export default function RegisterForm() {
                   </FormItem>
                 )}
               />
-              <Input
-                type="file"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    SetFile(file);
-                  }
-                }}
-              />
+              <div>
+                <Label>Profile Picture</Label>
+                <Input
+                  type="file"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      SetFile(file);
+                    }
+                  }}
+                />
+              </div>
             </div>
             <div className="space-y-3">
               <h1 className="text-2xl">Become A Seller</h1>

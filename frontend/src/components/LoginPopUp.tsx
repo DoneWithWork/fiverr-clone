@@ -28,10 +28,11 @@ import { useForm } from "react-hook-form";
 
 import { Dispatch, useState } from "react";
 import { ErrorToast, SuccessToast } from "./toasts";
-import FetchHelper from "@/lib/fetchHelper";
+
 import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 import { User } from "@/types/types";
+import { FetchHelper } from "@/lib/fetchHelper";
 
 const formSchema = z.object({
   username: z.string().min(2, {

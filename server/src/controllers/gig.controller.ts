@@ -1,14 +1,14 @@
 import asyncHandler from "express-async-handler";
-import { GigModel } from "../models/Gig.mode";
+import { GigModel } from "../models/Gig.model";
 import { UserModel } from "../models/User.model";
 import { Request, Response } from "express";
-interface IUserRequest extends Request {
+export interface IUserRequest extends Request {
   userId?: string;
   isSeller?: boolean;
 }
 export const getGigs = asyncHandler(async (req, res) => {
   const q = req.query;
-
+  console.log(q);
   const filters = {
     ...(q.userId && { userId: q.userId }),
     ...(q.cat && { cat: q.cat }),
@@ -20,17 +20,24 @@ export const getGigs = asyncHandler(async (req, res) => {
     }),
     ...(q.search && { title: { $regex: q.search, $options: "i" } }),
   };
-  const gigs = await GigModel.find(filters);
+  const gigs = await GigModel.find(filters).populate({
+    path: "userId",
+    select: "-password -email -phone",
+  });
   res.status(200).json(gigs);
 });
 export const getGigById = asyncHandler(
   async (req: IUserRequest, res: Response) => {
     const { id } = req.params;
+    console.log("hit");
     if (!id) {
       res.status(400).json({ message: "Gig id is required" });
       return;
     }
-    const gig = await GigModel.findById(id);
+    const gig = await GigModel.findById(id).populate({
+      path: "userId",
+      select: "-password -email -phone",
+    });
     if (!gig) {
       res.status(404).json({ message: "Gig not found" });
       return;
@@ -80,3 +87,88 @@ export const editGig = asyncHandler(async (req, res) => {
   }
   res.status(200).json(gig);
 });
+export const NewGig = asyncHandler(async (req: IUserRequest, res: Response) => {
+  const {
+    title,
+    price,
+    description,
+    category,
+    images,
+    coverImage,
+    deliveryTime,
+    revisions,
+    features,
+    published,
+  } = req.body as {
+    title: string;
+    price: number;
+    description: string;
+    category: string;
+    images: Array<string>;
+    coverImage: string;
+    deliveryTime: number;
+    revisions: number;
+    features: Array<string>;
+    published: boolean;
+  };
+  console.log(req.body);
+  if (
+    !title ||
+    !price ||
+    !description ||
+    !category ||
+    !coverImage ||
+    !deliveryTime ||
+    !revisions ||
+    !features
+  ) {
+    res.status(400).json({
+      message:
+        "Title, price, description, category, cover image, delivery time, and revision number are required",
+    });
+    return;
+  }
+  const user = await UserModel.findById(req.userId);
+  if (!user) {
+    res.status(401).json({ message: "you cannot create gig" });
+    return;
+  }
+  if (!user.isSeller) {
+    res.status(401).json({ message: "you cannot create gig" });
+    return;
+  }
+  const gig = await GigModel.create({
+    userId: req.userId,
+    title,
+    price,
+    desc: description,
+    cat: category,
+    cover: coverImage,
+    images,
+    deliveryTime,
+    revisionNumber: revisions,
+    published,
+    features,
+  });
+  res.status(201).json(gig);
+});
+
+export const getUserWithGig = asyncHandler(
+  async (req: IUserRequest, res: Response) => {
+    const { id } = req.params;
+    if (!id) {
+      res.status(400).json({ message: "User id is required" });
+      return;
+    }
+    //find all gigs of a user
+    const user = await UserModel.findById(id);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    const gigs = await GigModel.find({ userId: id });
+    //put gigs in user object
+    res.status(200).json({ user, gigs });
+    return;
+  }
+);

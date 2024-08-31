@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only  ./src/server.ts",
     "build": "npx tsc ",
-    "start": "node --trace-sync-io dist/server.js"
+    "start": "node --trace-sync-io dist/server.js",
+    "prod": "npm run build && npm run start"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.4",
+    "stripe": "^16.8.0",
     "typescript": "^5.5.4"
   },
   "devDependencies": {

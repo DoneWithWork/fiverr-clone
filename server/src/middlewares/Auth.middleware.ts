@@ -34,6 +34,7 @@ export const verifyToken = (
       if (typeof decoded === "object" && decoded !== null) {
         const payload = decoded;
         req.userId = payload.id;
+        console.log(payload);
         req.isSeller = payload.isSeller;
       } else {
         return next(new Error("Token payload is not valid!"));

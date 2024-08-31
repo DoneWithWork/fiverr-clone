@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { Schema } from "mongoose";
 
 const GigSchema = new Schema(
   {
     userId: {
-      type: { type: Schema.Types.ObjectId, ref: "User" },
+      type: Schema.Types.ObjectId, // Correcting the nesting issue
+      ref: "User",
       required: true,
     },
     title: {
@@ -40,14 +41,6 @@ const GigSchema = new Schema(
       required: false,
     },
 
-    shortTitle: {
-      type: String,
-      required: true,
-    },
-    shortDesc: {
-      type: String,
-      required: true,
-    },
     deliveryTime: {
       type: Number,
       required: true,
@@ -64,6 +57,10 @@ const GigSchema = new Schema(
       type: Number,
       default: 0,
     },
+    published: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -71,3 +68,24 @@ const GigSchema = new Schema(
 );
 
 export const GigModel = mongoose.model("Gig", GigSchema);
+
+interface Gig extends Document {
+  userId: mongoose.Types.ObjectId;
+  title: string;
+  desc: string;
+  totalStars: number;
+  starNumber: number;
+  cat: string;
+  price: number;
+  cover: string;
+  images?: string[];
+  deliveryTime: number;
+  revisionNumber: number;
+  features?: string[];
+  sales: number;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export default Gig;

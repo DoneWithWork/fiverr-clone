@@ -26,7 +26,10 @@ export const Login = asyncHandler(
       res.status(401).json({ message: "Invalid credentials" });
       return;
     }
-    const token = jwt.sign({ id: user!._id }, process.env.JWT_SECRET!);
+    const token = jwt.sign(
+      { id: user!._id, isSeller: user.isSeller },
+      process.env.JWT_SECRET!
+    );
     res.cookie("accessToken", token, {
       httpOnly: true,
 
@@ -55,9 +58,9 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
     password: string;
     country: string;
     imageUrl: string;
-    isSeller: boolean;
-    description: string;
-    phone: string;
+    isSeller?: boolean;
+    description?: string;
+    phone?: string;
   };
   if (
     !username ||
@@ -85,6 +88,7 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
   });
   if (!user) {
     res.status(400).json({ message: "User not created" });
+    return;
   }
   res.status(201).json({ message: "User created" });
 });

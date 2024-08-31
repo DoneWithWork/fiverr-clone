@@ -7,13 +7,18 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import mongoose from "mongoose";
 import authRouter from "./routes/auth.route";
+import gigRouter from "./routes/gig.route";
+import orderRouter from "./routes/order.route";
+import conversationRouter from "./routes/conversation.route";
+import messageRouter from "./routes/message.route";
 dotenv.config();
 const app = express();
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: [process.env.CLIENT_URL!, "http://localhost:4173"],
     credentials: true,
   })
 );
@@ -25,7 +30,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
-
+app.use("/gigs", gigRouter);
+app.use("/orders", orderRouter);
+app.use("/messages", messageRouter);
+app.use("/conversations", conversationRouter);
 app
   .get("*", (req, res) => {
     res.status(404).send("Not Found");
