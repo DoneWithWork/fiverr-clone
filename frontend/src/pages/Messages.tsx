@@ -33,8 +33,8 @@ export default function Messages() {
   //need to mutate the data to toggle read status
   return (
     <div className="container max-w-[1200px]">
-      <h1>Messages</h1>
-      <table>
+      <h1 className="text-center text-2xl font-semibold py-5">Messages</h1>
+      <table className="">
         <thead>
           <tr>
             <th>Seller</th>
@@ -52,7 +52,12 @@ export default function Messages() {
               return (
                 <tr key={conversation._id}>
                   <td>
-                    <Link to={`/message/${sellerId}`}>Seller</Link>
+                    <Link
+                      to={`/messages/${sellerId}`}
+                      className="underline text-blue-500"
+                    >
+                      {sellerId}
+                    </Link>
                   </td>
                   <td>{conversation.lastMessage}</td>
                   <td>{timeAgo.format(new Date(conversation.updatedAt))}</td>

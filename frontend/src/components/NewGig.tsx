@@ -59,6 +59,7 @@ export default function NewGig() {
   const [addFeature, setAddFeature] = useState<boolean>(false);
   const [feature, setFeature] = useState<string>("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof NewGigSchema>>({
     resolver: zodResolver(NewGigSchema),
     //repopulate the fields if it is a draft
@@ -93,6 +94,7 @@ export default function NewGig() {
   async function onSubmit(data: z.infer<typeof NewGigSchema>) {
     //get public urls for all images
     //get url of cover image
+    setLoading(true);
     const url = converImage && (await uploadImage(converImage!));
     const imageUrls = images && (await Promise.all(images.map(uploadImage)));
     const values = { coverImage: url, images: imageUrls, ...data };
@@ -103,6 +105,7 @@ export default function NewGig() {
     } else {
       ErrorToast({ message: "Failed to create gig" });
     }
+    setLoading(false);
     console.log(values);
   }
   return (
@@ -333,7 +336,9 @@ export default function NewGig() {
               </Button>
             </div>
           ))}
-          <Button type="submit">Publish Gig</Button>
+          <Button type="submit" disabled={loading}>
+            Publish Gig
+          </Button>
         </form>
       </Form>
     </div>

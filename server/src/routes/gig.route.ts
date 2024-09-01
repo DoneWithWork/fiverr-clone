@@ -5,6 +5,7 @@ import {
   deleteGig,
   editGig,
   getGigById,
+  getGigForSeller,
   getGigs,
   getUserWithGig,
   NewGig,
@@ -19,4 +20,5 @@ router.post("/updategig", verifyToken, editGig);
 router.post("/newgig", verifyToken, NewGig);
 
 router.get("/getuser/:id", getUserWithGig);
+router.get("/seller/getgigseller", verifyToken, getGigForSeller);
 export default router;

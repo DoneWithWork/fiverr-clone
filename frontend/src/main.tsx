@@ -19,6 +19,7 @@ import OrderBuyerInvididual from "./pages/OrderBuyerInvididual.tsx";
 import SingleUser from "./pages/IndividualUser.tsx";
 import Messages from "./pages/Messages.tsx";
 import IndividualMessage from "./pages/Message.tsx";
+import MyGigs from "./pages/MyGigs.tsx";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "/newgig",
         element: <NewGig />,
+      },
+      {
+        path: "/mygigs",
+        element: <MyGigs />,
       },
       {
         path: "/seller-dashboard/orders",

@@ -36,6 +36,7 @@ export default function OrdersBuyer() {
             </Link>
           </Link>
         ))}
+        {data.length === 0 && <div>No orders found</div>}
       </div>
     </div>
   );

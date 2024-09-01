@@ -7,6 +7,7 @@ export type User = {
   phone?: string;
   desc?: string;
   isSeller: boolean;
+  mode: "seller" | "buyer";
 };
 
 export type GigType = {

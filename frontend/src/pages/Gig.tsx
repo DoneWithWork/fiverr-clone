@@ -7,6 +7,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/userStore";
+import { Mail } from "lucide-react";
 
 export default function Gig() {
   const { id } = useParams();
@@ -60,12 +61,24 @@ export default function Gig() {
         className="w-full max-w-[500px] object-cover  max-h-[300px]"
         alt="cover image"
       />
+      {user?._id !== data.userId._id && (
+        <Button asChild className="my-2">
+          <Link
+            to={`/messages/${data.userId._id}`}
+            className="flex flex-row items-center gap-2 "
+          >
+            Message Seller <Mail size={20} />
+          </Link>
+        </Button>
+      )}
       <div className="my-10">
+        <h2 className="font-semibold">Features offered</h2>
         {data.features.map((feature) => (
-          <p key={feature}>{feature}</p>
+          <li key={feature}>{feature}</li>
         ))}
       </div>
       <div className="embla">
+        <p>Sample Work</p>
         <div className="embla__viewport" ref={emblaRef}>
           <div className="embla__container">
             {data.images.map((image) => (
@@ -73,16 +86,14 @@ export default function Gig() {
                 <img
                   src={image}
                   alt=""
-                  className="w-full max-w-[500px] object-cover  max-h-[300px]"
+                  className="w-full max-w-[500px] object-cover  max-h-[300px] border-2 border-black rounded-sm"
                 />
               </div>
             ))}
           </div>
         </div>
-        <Button asChild>
-          <Link to={`/pay/${data._id}`}>Order This Gig</Link>
-        </Button>
-        <div className="flex flex-row items-center gap-5 mt-3">
+
+        <div className="flex flex-row items-center gap-5 mt-3 mb-3">
           <Button className="embla__prev" onClick={scrollPrev}>
             Prev
           </Button>
@@ -90,6 +101,9 @@ export default function Gig() {
             Next
           </Button>
         </div>
+        <Button asChild>
+          <Link to={`/pay/${data._id}`}>Order This Gig</Link>
+        </Button>
       </div>
     </div>
   );

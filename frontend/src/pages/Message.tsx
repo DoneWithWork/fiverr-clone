@@ -81,7 +81,7 @@ export default function IndividualMessage() {
   return (
     <div className="container py-2 max-w-[80%] ">
       {isLoading && <div>Loading...</div>}
-      <p>You are talking to</p>
+      <p>You are talking to {id}</p>
       {!isLoading && (!data || data.length === 0) && <div>No messages</div>}
       <div className="flex flex-col gap-3 max-h-[500px]  sm:max-h-[600px] overflow-scroll overflow-x-hidden ">
         {data &&

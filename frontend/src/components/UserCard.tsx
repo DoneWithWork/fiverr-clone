@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "./ui/button";
 
 import { useUserStore } from "@/store/userStore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function UserCard() {
@@ -46,6 +46,11 @@ export default function UserCard() {
         <div className="w-full">
           <p>Rating</p>
           <Button className="w-full my-5">See Earnings</Button>
+        </div>
+        <div>
+          <Button asChild>
+            <Link to={"/newgig"}>Create New Gig</Link>
+          </Button>
         </div>
       </CardContent>
       <CardFooter>

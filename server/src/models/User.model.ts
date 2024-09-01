@@ -41,6 +41,10 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    mode: {
+      type: String,
+      default: "buyer",
+    },
   },
   {
     timestamps: true,

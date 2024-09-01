@@ -7,8 +7,10 @@ import {
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Button } from "./ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "@/store/userStore";
+import { FetchHelper } from "@/lib/fetchHelper";
+import SearchBox from "./SearchBox";
 
 const menuOption = [
   {
@@ -16,10 +18,16 @@ const menuOption = [
     link: "/seller-dashboard",
     seller: true,
   },
+
   {
     title: "Messages",
     link: "/messages",
     seller: false,
+  },
+  {
+    title: "Messages",
+    link: "/messages",
+    seller: true,
   },
   {
     title: "Orders",
@@ -27,8 +35,8 @@ const menuOption = [
     seller: false,
   },
   {
-    title: "Gigs",
-    link: "/gigs",
+    title: "My Gigs",
+    link: "/mygigs",
     seller: true,
   },
   {
@@ -43,15 +51,51 @@ const menuOption = [
   },
 ] as const;
 export default function SideBar() {
-  const { clearStore, user, mode, updateMode } = useUserStore();
-  function logOut() {
-    clearStore();
+  const { clearStore, user, mode, updateMode, updateUser } = useUserStore();
+  const navigate = useNavigate();
+  function deleteCookie(name: string) {
+    document.cookie =
+      name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   }
-  function SwitchStatus() {
+  async function logOut() {
+    clearStore();
+    deleteCookie("accessToken");
+
+    await FetchHelper("auth/logout", "POST");
+    navigate("/");
+  }
+  async function SwitchStatus() {
+    console.log(mode);
     if (mode === "seller") {
       updateMode("buyer");
+      await FetchHelper("auth/updatemode", "POST", { mode: "buyer" });
+      updateUser({
+        ...user,
+        mode: "buyer",
+        _id: user?._id || "",
+        username: user?.username || "", // Provide a default empty string if undefined
+        email: user?.email || "", // Provide a default empty string if undefined
+        country: user?.country || "", // Provide a default empty string if undefined
+        imageUrl: user?.imageUrl || "", // Provide a default empty string if undefined
+        phone: user?.phone || "", // Provide a default empty string if undefined
+        desc: user?.desc || "", // Provide a default empty string if undefined
+        isSeller: user?.isSeller || false, // Provide a default value if undefined
+      });
     } else {
       updateMode("seller");
+      await FetchHelper("auth/updatemode", "POST", { mode: "seller" });
+      updateUser({
+        ...user,
+        mode: "seller",
+        _id: user?._id || "",
+        username: user?.username || "", // Provide a default empty string if undefined
+        email: user?.email || "", // Provide a default empty string if undefined
+        country: user?.country || "", // Provide a default empty string if undefined
+        imageUrl: user?.imageUrl || "", // Provide a default empty string if undefined
+        phone: user?.phone || "", // Provide a default empty string if undefined
+        desc: user?.desc || "", // Provide a default empty string if undefined
+        isSeller: user?.isSeller || false, // Provide a default value if undefined
+      });
     }
   }
   return (
@@ -76,8 +120,8 @@ export default function SideBar() {
               </div>
               {menuOption.map((item, index) =>
                 //if user is seller and item is seller or user is buyer and item is buyer
-                (user.isSeller && item.seller) ||
-                (!user.isSeller && !item.seller) ? (
+                (mode == "seller" && item.seller) ||
+                (mode == "buyer" && !item.seller) ? (
                   <div key={index} className="text-left">
                     <SheetClose asChild>
                       <Link
@@ -93,30 +137,44 @@ export default function SideBar() {
               )}
 
               {mode === "seller" ? (
-                <Button onClick={SwitchStatus} className="w-full my-4">
-                  Switch To Buying
-                </Button>
+                <SheetClose asChild>
+                  <Link to="/buyer-dashboard">
+                    <Button onClick={SwitchStatus} className="w-full my-5">
+                      Switch To Buying
+                    </Button>
+                  </Link>
+                </SheetClose>
               ) : (
-                <Button onClick={SwitchStatus} className="w-full my-4">
-                  Switch To Selling
-                </Button>
+                <>
+                  <SearchBox />
+                  <SheetClose asChild>
+                    <Link to="/seller-dashboard">
+                      <Button onClick={SwitchStatus} className="w-full my-5">
+                        Switch To Selling
+                      </Button>
+                    </Link>
+                  </SheetClose>
+                </>
               )}
 
-              <Button
-                className="w-full"
-                onClick={logOut}
-                variant={"destructive"}
-              >
-                Log Out
-              </Button>
+              <SheetClose asChild>
+                <Button
+                  className="w-full"
+                  onClick={logOut}
+                  variant={"destructive"}
+                >
+                  Log Out
+                </Button>
+              </SheetClose>
             </div>
           ) : (
             <>
               <SheetClose asChild>
-                <Button>
+                <Button asChild>
                   <Link to="/register">Join Fiverr</Link>
                 </Button>
               </SheetClose>
+
               <div className="space-y-6 py-10 text-left">
                 <p className="font-bold">Sign In</p>
                 <div>

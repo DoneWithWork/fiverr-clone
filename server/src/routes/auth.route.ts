@@ -1,5 +1,10 @@
 import express from "express";
-import { Login, Logout, Register } from "../controllers/auth.controller";
+import {
+  Login,
+  Logout,
+  Register,
+  updateMode,
+} from "../controllers/auth.controller";
 import { verifyToken } from "../middlewares/Auth.middleware";
 
 const router = express.Router();
@@ -11,5 +16,5 @@ router.get("/protected", verifyToken, (req, res) => {
   console.log("hit");
   res.status(200).send("You are authorized!");
 });
-
+router.post("/updatemode", verifyToken, updateMode);
 export default router;

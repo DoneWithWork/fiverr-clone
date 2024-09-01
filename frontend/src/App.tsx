@@ -9,6 +9,8 @@ import {
   Briefcase,
   Globe,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "./components/ui/button";
 
 const services = [
   {
@@ -59,6 +61,11 @@ export default function Home() {
         </div>
         <div className="w-[70%] my-5 max-w-[500px]">
           <SearchBox />
+        </div>
+        <div>
+          <Button asChild>
+            <Link to="/gigs">Go To All services</Link>
+          </Button>
         </div>
       </div>
       <div className="py-5">

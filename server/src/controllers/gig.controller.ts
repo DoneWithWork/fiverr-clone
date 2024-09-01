@@ -172,3 +172,23 @@ export const getUserWithGig = asyncHandler(
     return;
   }
 );
+
+export const getGigForSeller = asyncHandler(
+  async (req: IUserRequest, res: Response) => {
+    const user = await UserModel.findById(req.userId);
+    console.log("hit gig seller");
+    if (!user) {
+      res.status(401).json({ message: "you cannot get gig" });
+      return;
+    }
+    if (!user.isSeller) {
+      res.status(401).json({ message: "you cannot get gig" });
+      return;
+    }
+    const gigs = await GigModel.find({ userId: req.userId }).populate({
+      path: "userId",
+    });
+    res.status(200).json(gigs);
+    return;
+  }
+);

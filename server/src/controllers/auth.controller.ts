@@ -4,6 +4,7 @@ import { UserModel } from "../models/User.model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
+import { IUserRequest } from "./gig.controller";
 
 export const Login = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -62,19 +63,11 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
     description?: string;
     phone?: string;
   };
-  if (
-    !username ||
-    !email ||
-    !password ||
-    !country ||
-    !imageUrl ||
-    !isSeller ||
-    !description ||
-    !phone
-  ) {
+  if (!username || !email || !password) {
     res
       .status(400)
       .json({ message: "Username, email, and password are required" });
+    return;
   }
   const user = await UserModel.create({
     username,
@@ -85,14 +78,17 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
     desc: description,
     phone,
     isSeller,
+    mode: isSeller ? "seller" : "buyer",
   });
   if (!user) {
     res.status(400).json({ message: "User not created" });
     return;
   }
   res.status(201).json({ message: "User created" });
+  return;
 });
 export const Logout = async (req: Request, res: Response) => {
+  console.log("Logout hit");
   res
     .clearCookie("accessToken", {
       sameSite: "none",
@@ -101,3 +97,22 @@ export const Logout = async (req: Request, res: Response) => {
     .status(200)
     .send("User has been logged out.");
 };
+export const updateMode = asyncHandler(
+  async (req: IUserRequest, res: Response) => {
+    const { mode } = req.body as { mode: string };
+    if (!mode) {
+      res.status(400).json({ message: "Mode is required" });
+      return;
+    }
+    const user = await UserModel.findByIdAndUpdate(
+      req.userId,
+      { mode },
+      { new: true }
+    );
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.status(200).json(user);
+  }
+);
