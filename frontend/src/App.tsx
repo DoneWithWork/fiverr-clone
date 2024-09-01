@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./components/ui/button";
+import { useEffect } from "react";
 
 const services = [
   {
@@ -51,6 +52,9 @@ const services = [
   },
 ];
 export default function Home() {
+  useEffect(() => {
+    fetch(`${process.env.VITE_BACKEND_URL}`);
+  }, []);
   return (
     <div className="">
       <div className="py-16 text-center bg-[linear-gradient(180deg,#003912_36.72%,#19aa64_141.43%)] flex flex-col items-center text-white">
