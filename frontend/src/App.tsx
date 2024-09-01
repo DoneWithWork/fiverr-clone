@@ -53,7 +53,7 @@ const services = [
 ];
 export default function Home() {
   useEffect(() => {
-    fetch(`${process.env.VITE_BACKEND_URL}`);
+    fetch(`${import.meta.env.VITE_BACKEND_URL}`);
   }, []);
   return (
     <div className="">
