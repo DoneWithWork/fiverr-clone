@@ -33,8 +33,8 @@ export const Login = asyncHandler(
     );
     res.cookie("accessToken", token, {
       httpOnly: true,
-
-      secure: process.env.NODE_ENV === "production",
+      secure: true, // Set to true in production (for HTTPS)
+      sameSite: "none", // Allows cross-origin requests to include the cookie
     });
     const { password: userPassword, ...userWithoutPassword } = user!.toObject();
     console.log("Successfull login");
